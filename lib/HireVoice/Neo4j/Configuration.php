@@ -79,11 +79,15 @@ class Configuration
     private function getTransport()
     {
         switch ($this->transport) {
-        case 'stream':
-            return new Transport\Stream($this->host, $this->port);
-        case 'curl':
-        default:
-            return new Transport\Curl($this->host, $this->port);
+            case 'stream':
+                return new Transport\Stream($this->host, $this->port);
+            case 'curl':
+            default:
+                if (class_exists($this->transport)) {
+                    return new $this->transport($this->host, $this->port);
+                }
+
+                return new Transport\Curl($this->host, $this->port);
         }
     }
 

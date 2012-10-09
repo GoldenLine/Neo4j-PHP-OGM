@@ -83,9 +83,9 @@ class Configuration
                 return new Transport\Stream($this->host, $this->port);
             case 'curl':
             default:
-                if (class_exists($this->transport)) {
-                    return new $this->transport($this->host, $this->port);
-                }
+            if (class_exists($this->transport) && in_array('Everyman\Neo4j\Transport', class_parents($this->transport))) {
+                return new $this->transport($this->host, $this->port);
+            }
 
                 return new Transport\Curl($this->host, $this->port);
         }

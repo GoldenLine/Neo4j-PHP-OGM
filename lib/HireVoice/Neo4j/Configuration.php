@@ -78,16 +78,21 @@ class Configuration
 
     private function getTransport()
     {
-        switch ($this->transport) {
-            case 'stream':
-                return new Transport\Stream($this->host, $this->port);
-            case 'curl':
-            default:
-            if (class_exists($this->transport) && in_array('Everyman\Neo4j\Transport', class_parents($this->transport))) {
-                return new $this->transport($this->host, $this->port);
-            }
+        // @todo: rolniczo ale działa na tymczas ...
+        if(is_object($this->transport)) {
+            return $this->transport;
+        } else {
+            switch ($this->transport) {
+                case 'stream':
+                    return new Transport\Stream($this->host, $this->port);
+                case 'curl':
+                default:
+                    if (class_exists($this->transport) && in_array('Everyman\Neo4j\Transport', class_parents($this->transport))) {
+                        return new $this->transport($this->host, $this->port);
+                    }
 
-                return new Transport\Curl($this->host, $this->port);
+                    return new Transport\Curl($this->host, $this->port);
+            }
         }
     }
 
